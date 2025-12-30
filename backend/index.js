@@ -2,16 +2,18 @@ import express from "express";
 import prisma from "./prismaClient.js";
 
 const app = express();
-const PORT = process.env.PORT || 3333;
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-// health-check
+app.get("/", (req, res) => {
+  res.json({ status: "ok" });
+});
+
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
 
-// создать пользователя
 app.post("/users", async (req, res) => {
   try {
     const { nickname, email } = req.body;
@@ -21,7 +23,7 @@ app.post("/users", async (req, res) => {
     }
 
     const user = await prisma.user.create({
-      data: { nickname, email },
+      data: { nickname, email }
     });
 
     res.status(201).json(user);
@@ -29,14 +31,14 @@ app.post("/users", async (req, res) => {
     if (err.code === "P2002") {
       return res.status(409).json({ error: "email already exists" });
     }
+    console.error(err);
     res.status(500).json({ error: "internal error" });
   }
 });
 
-// список пользователей
 app.get("/users", async (req, res) => {
   const users = await prisma.user.findMany({
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: "desc" }
   });
   res.json(users);
 });
