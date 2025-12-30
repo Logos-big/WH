@@ -11,9 +11,8 @@ model User {
   nickname  String
   email     String   @unique
   createdAt DateTime @default(now())
-
-  tournaments Tournament[] @relation("CreatorTournaments")
 }
+
 
 model Tournament {
   id        String   @id @default(cuid())
