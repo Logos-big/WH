@@ -6,43 +6,11 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-app.get("/", (req, res) => {
+app.get("/health", async (_, res) => {
+  await prisma.$queryRaw`SELECT 1`;
   res.json({ status: "ok" });
 });
 
-app.get("/health", (req, res) => {
-  res.json({ status: "ok" });
-});
-
-app.post("/users", async (req, res) => {
-  try {
-    const { nickname, email } = req.body;
-
-    if (!nickname || !email) {
-      return res.status(400).json({ error: "nickname and email are required" });
-    }
-
-    const user = await prisma.user.create({
-      data: { nickname, email }
-    });
-
-    res.status(201).json(user);
-  } catch (err) {
-    if (err.code === "P2002") {
-      return res.status(409).json({ error: "email already exists" });
-    }
-    console.error(err);
-    res.status(500).json({ error: "internal error" });
-  }
-});
-
-app.get("/users", async (req, res) => {
-  const users = await prisma.user.findMany({
-    orderBy: { createdAt: "desc" }
-  });
-  res.json(users);
-});
-
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server started on port ${PORT}`);
+app.listen(PORT, () => {
+  console.log("Server running on port", PORT);
 });
