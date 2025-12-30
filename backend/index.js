@@ -2,9 +2,17 @@ import express from "express";
 import prisma from "./prismaClient.js";
 
 const app = express();
-const PORT = process.env.PORT || 88;
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+
+// ROOT (обязательно для Railway)
+app.get("/", (req, res) => {
+  res.json({
+    status: "ok",
+    service: "WH backend",
+  });
+});
 
 // health-check
 app.get("/health", (req, res) => {
@@ -58,6 +66,7 @@ app.get("/users/:id", async (req, res) => {
   res.json(user);
 });
 
-app.listen(PORT, () => {
+// ОБЯЗАТЕЛЬНО
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server started on port ${PORT}`);
 });
