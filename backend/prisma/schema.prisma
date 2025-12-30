@@ -12,25 +12,3 @@ model User {
   email     String   @unique
   createdAt DateTime @default(now())
 }
-
-
-model Tournament {
-  id        String   @id @default(cuid())
-  name      String
-  game      String
-  status    String
-  createdAt DateTime @default(now())
-
-  creatorId String
-  creator   User     @relation("CreatorTournaments", fields: [creatorId], references: [id])
-}
-
-model Match {
-  id           String   @id @default(cuid())
-  tournamentId String
-  round        Int
-  playerA      String
-  playerB      String
-  winner       String?
-  createdAt    DateTime @default(now())
-}
